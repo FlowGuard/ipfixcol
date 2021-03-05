@@ -3,7 +3,7 @@ FROM debian:latest
 MAINTAINER Petr Velan <petr.velan@cesnet.cz>
 
 # IPFIXcol dependencies
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && apt-get install -y --no-install-recommends \
   autoconf \
   bison \
   build-essential \
@@ -14,14 +14,15 @@ RUN apt-get update && apt-get install -y \
   liblzo2-dev \
   libtool \
   libsctp-dev \
-  libssl1.0-dev \
   libxml2 \
   libxml2-dev \
   pkg-config \
   xsltproc \
   librdkafka-dev \
   librdkafka1 \
-  librrd-dev
+  librrd-dev \
+  ca-certificates \
+  automake
 
 # checkout IPFIXcol
 WORKDIR /root/
@@ -39,7 +40,7 @@ ENV CPPFLAGS="-march=native -mtune=native -O3 -pipe"
 # install IPFIXcol base
 RUN cd base; \
   autoreconf -i; \
-  ./configure --with-distro=debian; \
+  ./configure --with-distro=debian --without-openssl; \
   make clean; \
   make install; \
   ldconfig
